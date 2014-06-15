@@ -6,6 +6,9 @@
     <div class="row">
         <div class="col-lg-12">
             <h1>GContacts // <a href="{{URL::Route('home')}}">{{{Session::get('hd')}}}</a> // Edit <span id="fullNameTitle">{{{$contact['name']['fullName']}}}</span></h1>
+            <p class="small" style="font-style: oblique;">
+                If submitted changes don't seem to come through, refresh the page again.
+            </p>
         </div>
     </div>
     {{Form::open(['files' => true])}}
@@ -103,7 +106,8 @@
             </p>
             <p class="text-warning">
                 Be patient when submitting. There is an intentional delay built in to make sure
-                your updates are reflected back on this page when querying Google.
+                your updates are reflected back on this page when querying Google. However, often Google
+                lingers so your updates might not show immediately.
             </p>
         </div>
     </div>

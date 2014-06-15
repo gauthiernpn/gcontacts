@@ -29,12 +29,7 @@
             </div>
             <div class="form-group">
                 <div class="col-sm-offset-4 col-sm-8">
-                    <button type="submit" class="btn btn-info">Sign in using Google</button><br />
-                    <span class="small">The page you will end up at will warn you about this tool being both
-                    insecure and anonymous. Technically true, but unavoidable since the only way to access Shared
-                    Contacts is through
-                        <a href="https://developers.google.com/accounts/docs/AuthSub">a deprecated API</a>. Google
-                    no longer offers the documentation to make this app more secure and less anonymous. Sorry!</span>
+                    <button type="submit" class="btn btn-info">Sign in using Google</button>
                 </div>
             </div>
         </form>

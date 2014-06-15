@@ -26,6 +26,7 @@
                 <th>Phone number(s)</th>
                 <th>Edit</th>
                 <th>Delete</th>
+                <th>Photo</th>
             </tr>
             @foreach($contacts as $contact)
             <tr>
@@ -55,6 +56,10 @@
                 <td>
                     <a href="{{URL::Route('contacts.delete',$contact->getShortId())}}"
                        class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
+                </td>
+                <td>
+                    <a href="{{URL::Route('contacts.manage-photo',$contact->getShortId())}}"
+                       class="btn btn-default btn-xs"><span class="glyphicon glyphicon-camera"></span></a>
                 </td>
             </tr>
 

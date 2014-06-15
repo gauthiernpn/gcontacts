@@ -81,5 +81,9 @@ class ContactsController extends BaseController
         }
     }
 
+    public function editPhoto() {
+        return 'todo, sorry.';
+    }
+
 
 }

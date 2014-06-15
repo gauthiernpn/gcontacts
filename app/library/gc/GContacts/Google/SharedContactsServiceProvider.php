@@ -11,7 +11,7 @@ class SharedContactsServiceProvider extends ServiceProvider
         if($this->app->environment() == 'app-engine') {
             $this->app->bind(
                 'GContacts\Google\SharedContactsInterface', // interface
-                'GContacts\Google\SharedContactsGAE' // class
+                'GContacts\Google\SharedContactsGAEOAuth2' // class
             );
         } else {
             $this->app->bind(
