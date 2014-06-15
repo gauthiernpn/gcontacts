@@ -1,0 +1,39 @@
+<atom:entry xmlns:atom='http://www.w3.org/2005/Atom'
+    xmlns:gd='http://schemas.google.com/g/2005'>
+  <atom:category scheme='http://schemas.google.com/g/2005#kind'
+    term='http://schemas.google.com/contact/2008#contact' />
+  <gd:name>
+     <gd:givenName>James</gd:givenName>
+     <gd:familyName>Cole</gd:familyName>
+     <gd:fullName>James Cole</gd:fullName>
+  </gd:name>
+  <atom:content type='text'>Notes</atom:content>
+  <gd:email rel='http://schemas.google.com/g/2005#work'
+    primary='true'
+    address='james@example.com' displayName='J. Cole' />
+  <gd:email rel='http://schemas.google.com/g/2005#home'
+    address='james-home@example.org' />
+  <gd:phoneNumber rel='http://schemas.google.com/g/2005#work'
+    primary='true'>
+    06 12 3456 78
+  </gd:phoneNumber>
+  <gd:phoneNumber rel='http://schemas.google.com/g/2005#home'>
+    06 87654321
+  </gd:phoneNumber>
+  <gd:im address='james-home@example.org'
+    protocol='http://schemas.google.com/g/2005#GOOGLE_TALK'
+    primary='true'
+    rel='http://schemas.google.com/g/2005#home' />
+  <gd:structuredPostalAddress
+      rel='http://schemas.google.com/g/2005#work'
+      primary='true'>
+    <gd:city>Mountain View</gd:city>
+    <gd:street>1600 Amphitheatre Pkwy</gd:street>
+    <gd:region>CA</gd:region>
+    <gd:postcode>94043</gd:postcode>
+    <gd:country>United States</gd:country>
+    <gd:formattedAddress>
+      1600 Amphitheatre Pkwy Mountain View
+    </gd:formattedAddress>
+  </gd:structuredPostalAddress>
+</atom:entry>
