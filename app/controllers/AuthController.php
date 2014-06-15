@@ -1,12 +1,6 @@
 <?php
 use Carbon\Carbon as Carbon;
 
-/**
- * Created by PhpStorm.
- * User: User
- * Date: 6-6-14
- * Time: 11:52
- */
 class AuthController extends BaseController
 {
     public function __construct(GContacts\Google\SharedContactsInterface $contacts)
