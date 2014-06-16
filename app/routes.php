@@ -3,6 +3,7 @@
 // basic home:
 Route::get('/',['uses' => 'HomeController@index', 'as' => 'index','before' => 'auth.google.reversed']);
 Route::get('/home',['uses' => 'HomeController@home', 'as' => 'home','before' => 'auth.google']);
+Route::get('/privacy',['uses' => 'HomeController@privacy', 'as' => 'privacy']);
 
 // everything auth related.
 Route::post('/login',['uses' => 'AuthController@loginOAuth2', 'as' => 'oauth.form-submit','before' => 'csrf']);

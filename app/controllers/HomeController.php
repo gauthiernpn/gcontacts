@@ -24,6 +24,10 @@ class HomeController extends BaseController {
 	{
         return View::make('index');
 	}
+    public function privacy()
+    {
+        return View::make('privacy');
+    }
 
     public function home() {
         $list = $this->contacts->all();
