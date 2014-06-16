@@ -20,16 +20,26 @@ class SharedContactsGAEOAuth2 implements SharedContactsInterface
 
         $context = stream_context_create($opts);
         $result = @file_get_contents($URL, false, $context);
-        if ($result === false) {
-            return 'Unknown error while retreiving contacts.';
+
+        $isError = strpos($result, 'Error 403 (Forbidden)');
+
+        if ($result === false || !($isError === false)) {
+            return 'There was an error while retrieving contacts. Do you have access to the shared contacts of '
+            . \Session::get('hd') . '?';
         }
-        $feed = \Zend\Feed\Reader\Reader::importString($result);
         $return = [];
-        if ($feed->count() > 0) {
-            foreach ($feed as $entry) {
-                $current = \GContacts\Feed\EntryParser::parseFromXML($entry->saveXml());
-                $return[] = $current;
+        try {
+            $feed = \Zend\Feed\Reader\Reader::importString($result);
+
+            if ($feed->count() > 0) {
+                foreach ($feed as $entry) {
+                    $current = \GContacts\Feed\EntryParser::parseFromXML($entry->saveXml());
+                    $return[] = $current;
+                }
             }
+        } catch (\Zend\Feed\Reader\Exception\RuntimeException $e) {
+            return 'There was an error while retrieving contacts. Do you have access to the shared contacts of '
+            . \Session::get('hd') . '?';
         }
         return $return;
     }
@@ -89,8 +99,8 @@ class SharedContactsGAEOAuth2 implements SharedContactsInterface
         ];
         $context = stream_context_create($opts);
         $result = @file_get_contents($URL, false, $context);
-        if($result === false) {
-            return 'An error occured while updating this contact.';
+        if ($result === false) {
+            return 'An error occurred while updating this contact.';
         }
         return true;
     }
@@ -134,7 +144,7 @@ class SharedContactsGAEOAuth2 implements SharedContactsInterface
         $context = stream_context_create($opts);
         $result = @file_get_contents($URL, false, $context);
         if ($result === false) {
-            return 'Error while retreiving contact.';
+            return 'Error while retrieving contact.';
         }
         return true;
     }
