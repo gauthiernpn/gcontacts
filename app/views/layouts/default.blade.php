@@ -7,6 +7,7 @@
     <title>Google Shared Contacts manager</title>
     <base href="{{asset('/')}}">
     <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/css/site.css" rel="stylesheet">
     @yield('styles')
 </head>
 <body>
