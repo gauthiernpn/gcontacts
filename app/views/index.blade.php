@@ -5,6 +5,18 @@
         <h1>Google Shared Contacts manager</h1>
 
         <p>
+            On most Google Apps domains, the only shared contact details between users are the users themselves;
+            ie. you can always find your colleagues in your phone's or email application's autocomplete feature.
+        </p>
+
+        <p>
+            A less known feature is called "shared contacts". Any arbitrary contact can be added to the "shared
+            contacts" so everybody within the domain can see these people's details. This can be extremely useful, since
+            it allows you to share client's information, external company details and other people many of your
+            colleagues might come in contact with.
+        </p>
+
+        <p>
             This small tool allows you to manage the shared contacts in your Google Apps domain.
             You can read more about <a href="https://support.google.com/a/answer/60218?hl=en">shared contacts on this
                 Google help page</a>.
@@ -15,7 +27,7 @@
 
         <p>
             To use this tool, make sure you are logged in and have Administrator rights on your
-            Google Apps domain. This tool does not work for @gmail.com addresses!
+            Google Apps domain. This tool does <strong>not</strong> work for @gmail.com addresses!
         </p>
 
         <form class="form-horizontal" role="form" method="post" action="{{URL::Route('oauth.form-submit')}}">
