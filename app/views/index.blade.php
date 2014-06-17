@@ -6,7 +6,7 @@
 
         <p>
             On most Google Apps domains, the only shared contact details between users are the users themselves;
-            ie. you can always find your colleagues in your phone's or email application's autocomplete feature.
+            you can always find your colleagues in your phone's or email application's autocomplete feature.
         </p>
 
         <p>

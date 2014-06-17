@@ -5,4 +5,4 @@
 <input type="file" name="photo" /><br />
 -->
 <span class="text-info">Google resizes all pictures to 96x96</span><br />
-<span class="small text-danger">Uploading new photo's is not yet supported.</span>
+<span class="small text-danger">Uploading new photos is not yet supported.</span>

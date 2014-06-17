@@ -9,7 +9,7 @@
     <tr>
         <td>
             Name prefix<br />
-            <span class="small">ie. Dr.</span>
+            <span class="small">e.g. Dr.</span>
         </td>
         <td><input type="text" name="namePrefix" value="{{{$contact['name']['namePrefix'] or ''}}}" placeholder="Name Prefix" class="form-control" /></td>
     </tr>
@@ -30,7 +30,7 @@
     </tr>
         <td>
             Name Suffix<br />
-            <span class="small">ie. MA</span>
+            <span class="small">e.g. MA</span>
         </td>
         <td><input type="text" name="nameSuffix" value="{{{$contact['name']['nameSuffix'] or ''}}}" placeholder="Name Suffix" class="form-control" /></td>
     </tr>
