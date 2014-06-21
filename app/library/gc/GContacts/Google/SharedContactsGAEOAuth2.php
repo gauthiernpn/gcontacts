@@ -6,7 +6,97 @@ class SharedContactsGAEOAuth2 implements SharedContactsInterface
 
     public function all()
     {
+        // this is where we start getting contacts:
+        // we begin with nothing:
+        $return = [];
+
+        // we get a bunch of contacts in a loop:
+        $moreContacts = true;
+        $currentIndex = 1;
+        \Log::debug('Start at index ' . $currentIndex);
+        $loopCounter = 0;
+        while ($moreContacts) {
+            \Log::debug('Loopcounter: ' . $loopCounter);
+
+            // get the nth set:
+            $rawBody = $this->_getAllContacts($currentIndex);
+            // if error, break out.
+            if ($rawBody === false) {
+                $moreContacts = false;
+                break;
+            }
+            // and we parse the current set:
+            $feed = \Zend\Feed\Reader\Reader::importString($rawBody);
+
+            // and add them to the return list.
+            if ($feed->count() > 0) {
+                foreach ($feed as $entry) {
+                    $current = \GContacts\Feed\EntryParser::parseFromXML($entry->saveXml());
+                    $return[] = $current;
+                }
+            }
+
+            // we figure out if there is more to come:
+            $DOMDocument = new \DOMDocument();
+            $DOMDocument->loadXML($rawBody);
+            $nextLink = false;
+            $moreContacts = false;
+            /** @var $child \DomNode */
+            foreach ($DOMDocument->getElementsByTagName('link') as $child) {
+                $rel = $child->attributes->getNamedItem('rel')->nodeValue;
+                if ($rel == 'next') {
+                    $moreContacts = true;
+                    $currentIndex += $feed->count();
+                }
+            }
+            $loopCounter++;
+        }
+        return $return;
+
+
+//        $URL = 'https://www.google.com/m8/feeds/contacts/' . \Session::get('hd') . '/full';
+//        $token = \Session::get('access_token');
+//
+//        $headers
+//            = "Authorization: Bearer token=\"{$token->access_token}\"\r\nContent-Type: application/x-www-form-urlencoded\r\nGData-Version: 3.0\r\n";
+//        $opts = [
+//            'http' => [
+//                'method' => 'GET',
+//                'header' => $headers
+//            ]
+//        ];
+//
+//        $context = stream_context_create($opts);
+//        $result = @file_get_contents($URL, false, $context);
+//
+//        $isError = strpos($result, 'Error 403 (Forbidden)');
+//
+//        if ($result === false || !($isError === false)) {
+//            return 'There was an error while retrieving contacts. Do you have access to the shared contacts of '
+//            . \Session::get('hd') . '?';
+//        }
+//        $return = [];
+//        try {
+//            $feed = \Zend\Feed\Reader\Reader::importString($result);
+//
+//            if ($feed->count() > 0) {
+//                foreach ($feed as $entry) {
+//                    $current = \GContacts\Feed\EntryParser::parseFromXML($entry->saveXml());
+//                    $return[] = $current;
+//                }
+//            }
+//        } catch (\Zend\Feed\Reader\Exception\RuntimeException $e) {
+//            return 'There was an error while retrieving contacts. Do you have access to the shared contacts of '
+//            . \Session::get('hd') . '?';
+//        }
+//        return $return;
+    }
+
+    private function _getAllContacts($index = 1)
+    {
         $URL = 'https://www.google.com/m8/feeds/contacts/' . \Session::get('hd') . '/full';
+        $URL .= '?max-results=25&start-index=' . $index;
+
         $token = \Session::get('access_token');
 
         $headers
@@ -20,28 +110,18 @@ class SharedContactsGAEOAuth2 implements SharedContactsInterface
 
         $context = stream_context_create($opts);
         $result = @file_get_contents($URL, false, $context);
+        if($result === false) {
+            return false;
+        }
+
 
         $isError = strpos($result, 'Error 403 (Forbidden)');
-
-        if ($result === false || !($isError === false)) {
-            return 'There was an error while retrieving contacts. Do you have access to the shared contacts of '
-            . \Session::get('hd') . '?';
+        if($isError) {
+            return false;
         }
-        $return = [];
-        try {
-            $feed = \Zend\Feed\Reader\Reader::importString($result);
+        return $result;
 
-            if ($feed->count() > 0) {
-                foreach ($feed as $entry) {
-                    $current = \GContacts\Feed\EntryParser::parseFromXML($entry->saveXml());
-                    $return[] = $current;
-                }
-            }
-        } catch (\Zend\Feed\Reader\Exception\RuntimeException $e) {
-            return 'There was an error while retrieving contacts. Do you have access to the shared contacts of '
-            . \Session::get('hd') . '?';
-        }
-        return $return;
+
     }
 
     public function getContact($code)

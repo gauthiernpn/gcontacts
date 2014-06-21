@@ -6,30 +6,75 @@ class SharedContactsOAuth2 implements SharedContactsInterface
 
     public function all()
     {
-        $URL = 'https://www.google.com/m8/feeds/contacts/' . \Session::get('hd') . '/full';
-        $token = \Session::get('access_token');
-        $result = \Requests::get(
-            $URL, [
-                'Authorization' => 'Bearer '.$token->access_token,
-                'Content-Type'  => 'application/x-www-form-urlencoded',
-                'GData-Version' => '3.0',
-            ]
-        );
+        // this is where we start getting contacts:
+        // we begin with nothing:
         $return = [];
-        if ($result->status_code == 200) {
-            $rawBody = $result->body;
+
+        // we get a bunch of contacts in a loop:
+        $moreContacts = true;
+        $currentIndex = 1;
+        \Log::debug('Start at index ' . $currentIndex);
+        $loopCounter = 0;
+        while ($moreContacts) {
+            \Log::debug('Loopcounter: ' . $loopCounter);
+
+            // get the nth set:
+            $rawBody = $this->_getAllContacts($currentIndex);
+            // if error, break out.
+            if ($rawBody === false) {
+                $moreContacts = false;
+                break;
+            }
+            // and we parse the current set:
             $feed = \Zend\Feed\Reader\Reader::importString($rawBody);
 
+            // and add them to the return list.
             if ($feed->count() > 0) {
                 foreach ($feed as $entry) {
                     $current = \GContacts\Feed\EntryParser::parseFromXML($entry->saveXml());
                     $return[] = $current;
                 }
             }
-        } else {
-            $return = 'Getting contacts returned an error code: ' . $result->status_code;
+
+            // we figure out if there is more to come:
+            $DOMDocument = new \DOMDocument();
+            $DOMDocument->loadXML($rawBody);
+            $nextLink = false;
+            $moreContacts = false;
+            /** @var $child \DomNode */
+            foreach ($DOMDocument->getElementsByTagName('link') as $child) {
+                $rel = $child->attributes->getNamedItem('rel')->nodeValue;
+                if($rel == 'next') {
+                    $moreContacts = true;
+                    $currentIndex += $feed->count();
+                }
+            }
+            $loopCounter++;
         }
         return $return;
+
+    }
+
+    private function _getAllContacts($index = 1)
+    {
+        $URL = 'https://www.google.com/m8/feeds/contacts/' . \Session::get('hd') . '/full';
+        $URL .= '?max-results=25&start-index=' . $index;
+
+        $token = \Session::get('access_token');
+        $result = \Requests::get(
+            $URL, [
+                'Authorization' => 'Bearer ' . $token->access_token,
+                'Content-Type'  => 'application/x-www-form-urlencoded',
+                'GData-Version' => '3.0',
+            ]
+        );
+
+        if ($result->status_code == 200) {
+            $rawBody = $result->body;
+            return $rawBody;
+        } else {
+            return false;
+        }
     }
 
     public function getContact($code)
@@ -38,7 +83,7 @@ class SharedContactsOAuth2 implements SharedContactsInterface
         $token = \Session::get('access_token');
         $result = \Requests::get(
             $URL, [
-                'Authorization' => 'Bearer '.$token->access_token,
+                'Authorization' => 'Bearer ' . $token->access_token,
                 'Content-Type'  => 'application/x-www-form-urlencoded',
                 'GData-Version' => '3.0',
             ]
@@ -64,7 +109,7 @@ class SharedContactsOAuth2 implements SharedContactsInterface
         $mime = $photo->getClientMimeType();
         $result = \Requests::put(
             $URL, [
-                'Authorization' => 'Bearer '.$token->access_token,
+                'Authorization' => 'Bearer ' . $token->access_token,
                 'Content-Type'  => $mime,
                 'GData-Version' => '3.0',
                 'If-Match'      => '*'
@@ -78,7 +123,7 @@ class SharedContactsOAuth2 implements SharedContactsInterface
         $result = \Requests::put(
             'https://www.google.com/m8/feeds/contacts/' . \Session::get('hd') . '/full/' . $code,
             [
-                'Authorization' => 'Bearer '.$token->access_token,
+                'Authorization' => 'Bearer ' . $token->access_token,
                 'Content-Type'  => 'application/atom+xml',
                 'GData-Version' => '3.0',
             ], $xml->saveXML()
@@ -100,7 +145,7 @@ class SharedContactsOAuth2 implements SharedContactsInterface
         $result = \Requests::delete(
             'https://www.google.com/m8/feeds/contacts/' . \Session::get('hd') . '/full/' . $code,
             [
-                'Authorization' => 'Bearer '.$token->access_token,
+                'Authorization' => 'Bearer ' . $token->access_token,
                 'Content-Type'  => 'application/atom+xml',
                 'GData-Version' => '3.0',
                 'If-Match'      => $contact->getEtag()
@@ -123,7 +168,7 @@ class SharedContactsOAuth2 implements SharedContactsInterface
         $result = \Requests::post(
             'https://www.google.com/m8/feeds/contacts/' . \Session::get('hd') . '/full',
             [
-                'Authorization' => 'Bearer '.$token->access_token,
+                'Authorization' => 'Bearer ' . $token->access_token,
                 'Content-Type'  => 'application/atom+xml',
                 'GData-Version' => '3.0',
             ], $xml->saveXML()
@@ -149,7 +194,7 @@ class SharedContactsOAuth2 implements SharedContactsInterface
                 // get photo from Google:
                 $result = \Requests::get(
                     $link->getHref(), [
-                        'Authorization' => 'Bearer '.$token->access_token,
+                        'Authorization' => 'Bearer ' . $token->access_token,
                         'Content-Type'  => 'application/x-www-form-urlencoded',
                         'GData-Version' => '3.0',
                     ]
@@ -172,7 +217,7 @@ class SharedContactsOAuth2 implements SharedContactsInterface
     public function logout()
     {
         $token = \Session::get('access_token');
-        $URL = 'https://accounts.google.com/o/oauth2/revoke?token='.$token->access_token;
+        $URL = 'https://accounts.google.com/o/oauth2/revoke?token=' . $token->access_token;
         $result = \Requests::get($URL);
         return true;
     }
