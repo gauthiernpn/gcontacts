@@ -51,7 +51,7 @@
 
         <p class="small">
             The source code can be found on <a href="https://github.com/JC5/gcontacts">GitHub</a>. &copy; <a
-                href="mailto:s@nder.be">Sander Dorigo</a>, {{date('Y')}}
+                href="mailto:thegrumpydictator@gmail.com">James Cole</a>, {{date('Y')}}
         </p>
 
     </div>
